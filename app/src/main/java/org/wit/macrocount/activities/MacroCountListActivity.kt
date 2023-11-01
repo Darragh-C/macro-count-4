@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.wit.macrocount.R
 import org.wit.macrocount.adapters.MacroCountAdapter
@@ -18,6 +19,7 @@ import org.wit.macrocount.models.UserModel
 import org.wit.macrocount.models.UserRepo
 import timber.log.Timber
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import java.time.LocalDate
 
 class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
@@ -26,10 +28,8 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
     private lateinit var binding: ActivityMacrocountListBinding
     private lateinit var adapter: MacroCountAdapter
     private lateinit var userRepo: UserRepo
-    //var userMacrosToday:
-    //private var currentUser: UserModel? = null
-    //private var currentUserId: String? = null
-    //var search = false
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +46,29 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
 
+        drawerLayout = findViewById(R.id.drawerLayout)!!
+        navigationView = findViewById(R.id.navigationView)!!
+
+        val actionBar = supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setHomeAsUpIndicator(R.drawable.ic_hamburger_menu)
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_profile -> {
+                    val launchIntent = Intent(this, UserProfileActivity::class.java)
+                    startActivity(launchIntent)
+                }
+                R.id.nav_analytics -> {
+                    val launchIntent = Intent(this, MacroChartsActivity::class.java)
+                    startActivity(launchIntent)
+                }
+            }
+            drawerLayout.closeDrawers()
+            true
+        }
+
+
         val userToday = app.days.findByUserDate(currentUserId!!.toLong(), LocalDate.now())
         val userTodayMacros = userToday?.userMacroIds?.mapNotNull { app.macroCounts.findById(it.toLong()) }
 
@@ -56,9 +79,6 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
         adapter = MacroCountAdapter(userTodayMacrosList, this)
 
         binding.recyclerView.adapter = adapter
-
-//        var currentUserMacros = currentUserId?.let { app.macroCounts.findByUserId(it.toLong()) }
-//        Timber.i("findByCurrentUser() at onCreate: $currentUserMacros")
 
         val fab: FloatingActionButton = findViewById(R.id.list_fab)
 
