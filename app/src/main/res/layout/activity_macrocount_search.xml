@@ -6,16 +6,48 @@
     android:orientation="vertical"
     >
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/macroSearchView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginHorizontal="16dp"
-        android:background="@drawable/search_bar"
-        android:queryHint="Enter MacroCount name"
-        />
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingRight="24dp"
+        android:paddingLeft="12dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/macroSearchView"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+
+
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/search_bar"
+            android:queryHint="Enter MacroCount name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+
+
+        <ImageView
+            android:id="@+id/filterIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_filter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/macroSearchRecyclerView"
