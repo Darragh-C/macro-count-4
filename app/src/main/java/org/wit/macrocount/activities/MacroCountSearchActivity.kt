@@ -17,6 +17,10 @@ import org.wit.macrocount.models.MacroCountModel
 import org.wit.macrocount.models.UserRepo
 import timber.log.Timber
 import android.app.AlertDialog
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
+import org.wit.macrocount.R
 
 
 class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
@@ -26,6 +30,7 @@ class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
     private lateinit var adapter: MacroCountAdapter
     private lateinit var userRepo: UserRepo
     private lateinit var userMacros: List<MacroCountModel>
+    private lateinit var filteredMacros: List<MacroCountModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +48,7 @@ class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
 
         if (currentUserId != null) {
             userMacros = app.macroCounts.findByUserId(currentUserId.toLong())
+            filteredMacros = userMacros
             adapter = MacroCountAdapter(userMacros, this)
         }
 
@@ -88,27 +94,71 @@ class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
     }
 
     private fun showFilterDialog(view: View) {
+        val dialogView = layoutInflater.inflate(R.layout.card_filter_option, null)
+
+        val propertySpinner = dialogView.findViewById<Spinner>(R.id.propertySpinner)
+        val operatorSpinner = dialogView.findViewById<Spinner>(R.id.operatorSpinner)
+        val valueEditText = dialogView.findViewById<EditText>(R.id.numberEditText)
+        val filterButton = dialogView.findViewById<Button>(R.id.filterButton)
+
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Filter Options")
-
-        val filterOptions = arrayOf("Option 1", "Option 2", "Option 3")
-        val checkedItems = booleanArrayOf(false, false, false)
-
-        builder.setMultiChoiceItems(
-            filterOptions, checkedItems
-        ) { dialog, which, isChecked ->
-
-        }
-
-        builder.setPositiveButton("Apply") { dialog, which ->
-
-        }
-
-        builder.setNegativeButton("Cancel") { dialog, which ->
-
-        }
+        builder.setView(dialogView)
 
         val dialog = builder.create()
         dialog.show()
+
+        filterButton.setOnClickListener {
+            val property = propertySpinner.selectedItem.toString()
+            val operator = operatorSpinner.selectedItem.toString()
+            val filterNumber = valueEditText.text.toString()
+
+            filteredMacros = applyFilter(property, operator, filterNumber)
+
+            adapter.updateData(filteredMacros)
+
+            dialog.dismiss()
+
+        }
+    }
+
+    private fun applyFilter(property: String, operator: String, filterValue: String): List<MacroCountModel> {
+        filteredMacros = userMacros
+
+        when (property) {
+            "Calories" -> {
+                filteredMacros = when (operator) {
+                    "Equals" -> filteredMacros.filter { it.calories.toInt() == filterValue.toInt() }
+                    "Less than" -> filteredMacros.filter { it.calories.toInt() <= filterValue.toInt() }
+                    "More than" -> filteredMacros.filter { it.calories.toInt() >= filterValue.toInt() }
+                    else -> filteredMacros
+                }
+            }
+            "Protein" -> {
+                filteredMacros = when (operator) {
+                    "Equals" -> filteredMacros.filter { it.protein.toInt() == filterValue.toInt() }
+                    "Less than" -> filteredMacros.filter { it.protein.toInt() <= filterValue.toInt() }
+                    "More than" -> filteredMacros.filter { it.protein.toInt() >= filterValue.toInt() }
+                    else -> filteredMacros
+                }
+            }
+            "Carbohydrates" -> {
+                filteredMacros = when (operator) {
+                    "Equals" -> filteredMacros.filter { it.carbs.toInt() == filterValue.toInt() }
+                    "Less than" -> filteredMacros.filter { it.carbs.toInt() <= filterValue.toInt() }
+                    "More than" -> filteredMacros.filter { it.carbs.toInt() >= filterValue.toInt() }
+                    else -> filteredMacros
+                }
+            }
+            "Fat" -> {
+                filteredMacros = when (operator) {
+                    "Equals" -> filteredMacros.filter { it.fat.toInt() == filterValue.toInt() }
+                    "Less than" -> filteredMacros.filter { it.fat.toInt() <= filterValue.toInt() }
+                    "More than" -> filteredMacros.filter { it.fat.toInt() >= filterValue.toInt() }
+                    else -> filteredMacros
+                }
+            }
+            else -> filteredMacros
+        }
+        return filteredMacros
     }
 }
