@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,8 @@ import org.wit.macrocount.main.MainApp
 import org.wit.macrocount.models.MacroCountModel
 import org.wit.macrocount.models.UserRepo
 import timber.log.Timber
+import android.app.AlertDialog
+
 
 class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
 
@@ -64,6 +67,11 @@ class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
             }
         })
 
+        binding.filterIcon.setOnClickListener {
+            showFilterDialog(binding.filterIcon)
+        }
+
+
     }
 
     override fun onMacroCountClick(macroCount: MacroCountModel) {
@@ -77,5 +85,30 @@ class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
 
     override fun onMacroDeleteClick(macroCount: MacroCountModel) {
         Timber.i("delete click")
+    }
+
+    private fun showFilterDialog(view: View) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Filter Options")
+
+        val filterOptions = arrayOf("Option 1", "Option 2", "Option 3")
+        val checkedItems = booleanArrayOf(false, false, false)
+
+        builder.setMultiChoiceItems(
+            filterOptions, checkedItems
+        ) { dialog, which, isChecked ->
+
+        }
+
+        builder.setPositiveButton("Apply") { dialog, which ->
+
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, which ->
+
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 }

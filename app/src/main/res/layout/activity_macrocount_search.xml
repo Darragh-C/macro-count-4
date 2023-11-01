@@ -19,8 +19,6 @@
             android:id="@+id/macroSearchView"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-
-
             android:layout_marginHorizontal="16dp"
             android:background="@drawable/search_bar"
             android:queryHint="Enter MacroCount name"
@@ -28,8 +26,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />
-
-
 
         <ImageView
             android:id="@+id/filterIcon"
@@ -39,15 +35,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:onClick="showFilterDialog"
             />
 
-
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/macroSearchRecyclerView"
