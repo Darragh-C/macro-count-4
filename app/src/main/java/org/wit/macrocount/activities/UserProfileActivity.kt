@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.NumberPicker
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,8 @@ class UserProfileActivity : AppCompatActivity() {
             user = app.users.findById(currentUserId.toLong())
         }
 
+        binding.userName.setText(user!!.name)
+
         Timber.i("on create user: $user")
 
         if (intent.hasExtra("user_signup")) {
@@ -60,15 +63,14 @@ class UserProfileActivity : AppCompatActivity() {
         //Weight goal radio buttons
 
         val goalRadioGroup = findViewById<RadioGroup>(R.id.goalRadioGroup)
-        var weightGoal: String = ""
 
         goalRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             when(checkedId) {
                 R.id.goalRadioButtonOption1 -> {
-                    weightGoal = "Lose"
+                    user?.goal = "Lose"
                 }
                 R.id.goalRadioButtonOption2 -> {
-                    weightGoal = "Gain"
+                    user?.goal = "Gain"
                 }
             }
         }
@@ -84,15 +86,14 @@ class UserProfileActivity : AppCompatActivity() {
         //Gender radio buttons
 
         val radioGroup = findViewById<RadioGroup>(R.id.genderRadioGroup)
-        var gender: String = ""
 
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when(checkedId) {
                 R.id.radioButtonOption1 -> {
-                    gender = "male"
+                    user?.gender = "male"
                 }
                 R.id.radioButtonOption2 -> {
-                    gender = "female"
+                    user?.gender = "female"
                 }
             }
         }
@@ -109,8 +110,8 @@ class UserProfileActivity : AppCompatActivity() {
 
         val numberPickerAge = findViewById<NumberPicker>(R.id.numberPickerAge)
         numberPickerAge.minValue = 0
-        numberPickerAge.maxValue = 250
-        numberPickerAge.value = user?.height?.toInt()!!
+        numberPickerAge.maxValue = 120
+        numberPickerAge.value = user?.age?.toInt()!!
 
         numberPickerAge.setOnValueChangedListener{ picker, oldVal, newVal ->
             i("{newVal}")
@@ -151,6 +152,12 @@ class UserProfileActivity : AppCompatActivity() {
         Timber.i("split dob 1: $presetDob[1]")
         Timber.i("split dob 2: $presetDob[2]")
 
+        if (presetDob != null) {
+            day = presetDob[0]
+            month = presetDob[1]
+            year = presetDob[2]
+        }
+
         val numberPickerDay = findViewById<NumberPicker>(R.id.numberPickerDay)
         numberPickerDay.minValue = 1
         numberPickerDay.maxValue = 31
@@ -180,8 +187,6 @@ class UserProfileActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener() {
             user!!.name = binding.userName.text.toString()
-            user!!.goal = weightGoal
-            user!!.gender = gender
             user!!.dob = day.toString() + "/" + month.toString() + "/" + year.toString()
 
             Timber.i("userProfile saved: $user")

@@ -79,9 +79,8 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
                 val launcherIntent = Intent(this, MacroChartsActivity::class.java)
                 getResult.launch(launcherIntent)
             }
-        }
-        when (item.itemId) {
             R.id.item_profile -> {
+                Timber.i("clicked profile icon")
                 val launcherIntent = Intent(this, UserProfileActivity::class.java)
                 getResult.launch(launcherIntent)
             }
