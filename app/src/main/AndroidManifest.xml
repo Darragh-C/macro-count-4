@@ -77,6 +77,13 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".activities.CameraActivity"
+            android:parentActivityName=".activities.MacroCountActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
 
     </application>
 </manifest>

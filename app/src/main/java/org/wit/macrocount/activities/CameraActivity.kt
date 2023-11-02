@@ -25,6 +25,10 @@ class CameraActivity : AppCompatActivity() {
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolbarCamera.title = "Take photo"
+        setSupportActionBar(binding.toolbarCamera)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         //camera setup
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)

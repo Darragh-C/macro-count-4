@@ -130,6 +130,12 @@ class MacroCountActivity : AppCompatActivity() {
         carbsSeekBar.progress = carbs
         fatSeekBar.progress = fat
 
+        binding.takePhoto.setOnClickListener() {
+            val launcherIntent = Intent(this, CameraActivity::class.java)
+            //getResult.launch(launcherIntent)
+            startActivity(launcherIntent)
+        }
+
         binding.btnAdd.setOnClickListener() {
             macroCount.title = binding.macroCountTitle.text.toString()
             macroCount.description = binding.macroCountDescription.text.toString()

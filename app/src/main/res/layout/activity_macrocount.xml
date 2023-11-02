@@ -212,47 +212,37 @@
                     android:layout_height="wrap_content"
                     android:progress="50"/>
 
-                <androidx.camera.view.PreviewView
-                    android:id="@+id/cameraPreview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <Button
-                    android:id="@+id/imageCaptureButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/cameraPreview"
-                    android:layout_centerHorizontal="true"
-                    android:text="Capture" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
                     <Button
                         android:id="@+id/chooseImage"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="16dp"
-                        android:background="@color/colorAccent"
-                        android:paddingBottom="8dp"
-                        android:paddingTop="8dp"
-                        android:text="@string/button_addImage"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
+                        android:layout_weight="1"
+                    android:layout_margin="16dp"
+                    android:background="@color/colorAccent"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="@string/button_addImage"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
                     <Button
                         android:id="@+id/takePhoto"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_margin="16dp"
                         android:background="@color/colorAccent"
                         android:paddingBottom="8dp"
                         android:paddingTop="8dp"
-                        android:text="Take photo"
+                        android:text="@string/button_takePhoto"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 

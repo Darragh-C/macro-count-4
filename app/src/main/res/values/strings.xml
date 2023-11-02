@@ -36,6 +36,7 @@
     <string name="title_userProfile">User profile</string>
 
     <string name="button_addImage">Add Image</string>
+    <string name="button_takePhoto">Take Photo</string>
     <string name="button_login">Log in</string>
     <string name="button_signup">Sign up</string>
 
