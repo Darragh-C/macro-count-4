@@ -2,14 +2,23 @@ package org.wit.macrocount.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import org.wit.macrocount.R
 import org.wit.macrocount.databinding.ActivityMacrocountBinding
@@ -21,6 +30,7 @@ import org.wit.macrocount.showImagePicker
 import com.squareup.picasso.Picasso
 import org.wit.macrocount.models.UserRepo
 import java.time.LocalDate
+import java.io.File
 
 
 class MacroCountActivity : AppCompatActivity() {
@@ -51,6 +61,7 @@ class MacroCountActivity : AppCompatActivity() {
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
 
         app = application as MainApp
 
