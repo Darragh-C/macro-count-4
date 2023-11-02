@@ -8,8 +8,4 @@
         android:title="Search"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/item_cancel"
-        android:title="@string/menu_cancelMacroCount"
-        app:showAsAction="always"/>
 </menu>

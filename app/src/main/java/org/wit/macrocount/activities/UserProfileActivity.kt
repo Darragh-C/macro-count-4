@@ -37,6 +37,7 @@ class UserProfileActivity : AppCompatActivity() {
 
         binding.toolbar.title = "Profile"
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         app = application as MainApp
         userRepo = UserRepo(applicationContext)
@@ -45,9 +46,8 @@ class UserProfileActivity : AppCompatActivity() {
         val currentUserId = userRepo.userId
         if (currentUserId != null) {
             user = app.users.findById(currentUserId.toLong())
+            binding.userName.setText(user!!.name)
         }
-
-        binding.userName.setText(user!!.name)
 
         Timber.i("on create user: $user")
 
@@ -56,6 +56,7 @@ class UserProfileActivity : AppCompatActivity() {
             //user = intent.extras?.getParcelable("user_signup")!!
             user!!.weight = "75"
             user!!.height  = "150"
+            user!!.age  = "18"
             user!!.dob = "1/1/1990"
             i("user intent received at profile activity: $user")
         }
@@ -207,15 +208,6 @@ class UserProfileActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_macrocount, menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.item_cancel -> {
-                finish()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
 }

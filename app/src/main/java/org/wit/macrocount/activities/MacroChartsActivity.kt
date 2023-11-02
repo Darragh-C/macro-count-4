@@ -47,6 +47,7 @@ class MacroChartsActivity : AppCompatActivity() {
 
         binding.toolbar.title = "Macro data"
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         app = application as MainApp
         userRepo = UserRepo(applicationContext)
@@ -135,16 +136,5 @@ class MacroChartsActivity : AppCompatActivity() {
         searchItem.isVisible = false
         return super.onCreateOptionsMenu(menu)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Timber.i("Rendering menu item")
-        when (item.itemId) {
-            R.id.item_cancel -> {
-                finish()
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
 
 }

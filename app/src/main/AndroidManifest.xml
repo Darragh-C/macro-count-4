@@ -38,13 +38,15 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.MacroCountActivity">
+            android:name=".activities.MacroCountActivity"
+            android:parentActivityName=".activities.MacroCountListActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.UserProfileActivity">
+            android:name=".activities.UserProfileActivity"
+            android:parentActivityName=".activities.MacroCountListActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -60,13 +62,15 @@
 
         </activity>
         <activity
-            android:name=".activities.MacroCountSearchActivity">
+            android:name=".activities.MacroCountSearchActivity"
+            android:parentActivityName=".activities.MacroCountActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".activities.MacroChartsActivity">
+            android:name=".activities.MacroChartsActivity"
+            android:parentActivityName=".activities.MacroCountListActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

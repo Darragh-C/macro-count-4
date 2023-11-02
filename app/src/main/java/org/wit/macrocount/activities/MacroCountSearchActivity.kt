@@ -36,7 +36,9 @@ class MacroCountSearchActivity : AppCompatActivity(), MacroCountListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMacrocountSearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        binding.toolbar.title = "MacroCount search"
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         app = application as MainApp
 

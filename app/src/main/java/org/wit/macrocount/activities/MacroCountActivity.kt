@@ -50,6 +50,7 @@ class MacroCountActivity : AppCompatActivity() {
 
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         app = application as MainApp
 
@@ -242,9 +243,6 @@ class MacroCountActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item_cancel -> {
-                finish()
-            }
             R.id.item_search -> {
                 val launcherIntent = Intent(this, MacroCountSearchActivity::class.java)
                 launcherIntent.putExtra("search", intent)
