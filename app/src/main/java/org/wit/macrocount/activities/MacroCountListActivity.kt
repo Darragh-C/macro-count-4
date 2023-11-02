@@ -3,10 +3,15 @@ package org.wit.macrocount.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.wit.macrocount.R
@@ -22,39 +27,41 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import java.time.LocalDate
 
-class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
+class MacroCountListActivity : AppCompatActivity(), MacroCountListener, NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var app: MainApp
     private lateinit var binding: ActivityMacrocountListBinding
     private lateinit var adapter: MacroCountAdapter
     private lateinit var userRepo: UserRepo
+    private lateinit var drawerToggle: ActionBarDrawerToggle
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //inflating layout, toolbar, recycler view, nav drawer
         binding = ActivityMacrocountListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val navDrawerLayout = LayoutInflater.from(this).inflate(R.layout.nav_drawer, null)
+        drawerLayout = navDrawerLayout.findViewById<DrawerLayout>(R.id.drawerLayout)
+
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
-
-        app = application as MainApp
-
-        userRepo = UserRepo(applicationContext)
-        val currentUserId = userRepo.userId
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
 
-        drawerLayout = findViewById(R.id.drawerLayout)!!
-        navigationView = findViewById(R.id.navigationView)!!
 
-        val actionBar = supportActionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.setHomeAsUpIndicator(R.drawable.ic_hamburger_menu)
 
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
+        val navigationView = navDrawerLayout.findViewById<NavigationView>(R.id.navigationView)
+
+        navigationView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_home -> {
+                    val launchIntent = Intent(this, MacroCountListActivity::class.java)
+                    startActivity(launchIntent)
+                }
                 R.id.nav_profile -> {
                     val launchIntent = Intent(this, UserProfileActivity::class.java)
                     startActivity(launchIntent)
@@ -64,10 +71,27 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
                     startActivity(launchIntent)
                 }
             }
-            drawerLayout.closeDrawers()
+            //drawerLayout.closeDrawers()
             true
         }
 
+        addContentView(navDrawerLayout, ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+
+        drawerToggle = ActionBarDrawerToggle(this, drawerLayout, binding.toolbar, R.string.drawer_open, R.string.drawer_close)
+        drawerLayout.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_hamburger_menu)
+
+
+
+        // user macro data
+
+        app = application as MainApp
+
+        userRepo = UserRepo(applicationContext)
+        val currentUserId = userRepo.userId
 
         val userToday = app.days.findByUserDate(currentUserId!!.toLong(), LocalDate.now())
         val userTodayMacros = userToday?.userMacroIds?.mapNotNull { app.macroCounts.findById(it.toLong()) }
@@ -94,18 +118,19 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.data_icon -> {
-                val launcherIntent = Intent(this, MacroChartsActivity::class.java)
-                getResult.launch(launcherIntent)
-            }
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true
         }
-        when (item.itemId) {
-            R.id.item_profile -> {
-                val launcherIntent = Intent(this, UserProfileActivity::class.java)
-                getResult.launch(launcherIntent)
-            }
-        }
+//        when (item.itemId) {
+//            R.id.data_icon -> {
+//                val launcherIntent = Intent(this, MacroChartsActivity::class.java)
+//                getResult.launch(launcherIntent)
+//            }
+//            R.id.item_profile -> {
+//                    val launcherIntent = Intent(this, UserProfileActivity::class.java)
+//                    getResult.launch(launcherIntent)
+//                }
+//            }
         return super.onOptionsItemSelected(item)
     }
 
