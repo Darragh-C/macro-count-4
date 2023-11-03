@@ -132,8 +132,7 @@ class MacroCountActivity : AppCompatActivity() {
 
         binding.takePhoto.setOnClickListener() {
             val launcherIntent = Intent(this, CameraActivity::class.java)
-            //getResult.launch(launcherIntent)
-            startActivity(launcherIntent)
+            getPhotoResult.launch(launcherIntent)
         }
 
         binding.btnAdd.setOnClickListener() {
@@ -324,4 +323,22 @@ class MacroCountActivity : AppCompatActivity() {
 
             }
         }
+
+    private val getPhotoResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when(result.resultCode){
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("Got Result ${result.data!!.data}")
+                            macroCount.image = result.data!!.data!!
+                            Picasso.get()
+                                .load(macroCount.image)
+                                .into(binding.macroCountImage)
+                        }
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
+
 }
