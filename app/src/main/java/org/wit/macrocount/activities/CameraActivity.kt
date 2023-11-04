@@ -1,5 +1,5 @@
 package org.wit.macrocount.activities
-
+import timber.log.Timber.Forest.i
 import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
@@ -92,11 +92,12 @@ class CameraActivity: AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults){
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                    val msg = "Photo captured: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                     val resultIntent = Intent()
                     resultIntent.putExtra("image_uri", output.savedUri)
+                    i("Photo resultIntent: $resultIntent")
                     setResult(RESULT_OK, resultIntent)
                     finish()
                 }

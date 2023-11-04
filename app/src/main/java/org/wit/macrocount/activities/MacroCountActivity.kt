@@ -327,19 +327,19 @@ class MacroCountActivity : AppCompatActivity() {
         }
 
     private val getPhotoResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { result ->
-                when(result.resultCode){
-                    RESULT_OK -> {
-                        if (result.data != null) {
-                            i("Got Result ${result.data!!.data}")
-                            macroCount.image = result.data!!.data!!
-                            Picasso.get()
-                                .load(macroCount.image)
-                                .into(binding.macroCountImage)
-                        }
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val imageUri = result.data?.getParcelableExtra<Uri>("image_uri")
+
+                    i("Got Result $imageUri")
+                    if (imageUri != null) {
+                        macroCount.image = imageUri
                     }
-                    RESULT_CANCELED -> { } else -> { }
+                        i("Got Result macrocount image ${macroCount.image}")
+                        Picasso.get()
+                            .load(macroCount.image)
+                            .into(binding.macroCountImage)
+
                 }
             }
 }
