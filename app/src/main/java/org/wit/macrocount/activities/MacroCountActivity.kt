@@ -3,7 +3,9 @@ package org.wit.macrocount.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
@@ -71,12 +73,6 @@ class MacroCountActivity : AppCompatActivity() {
         val seekBarMin = 0
         val seekBarMax = 500
 
-//        //seekbar data value stores
-//        var calories: Int = 0
-//        var protein: Int = 0
-//        var carbs: Int = 0
-//        var fat: Int = 0
-
         userRepo = UserRepo(applicationContext)
         currentUserId = userRepo.userId!!.toLong()
 
@@ -93,6 +89,12 @@ class MacroCountActivity : AppCompatActivity() {
             fat = initData(macroCount.fat).toInt()
 
             binding.btnAdd.setText(R.string.save_macroCount)
+
+            if (macroCount.image.toString() != "") {
+                Picasso.get()
+                    .load(macroCount.image)
+                    .into(binding.macroCountImage)
+            }
         }
 
         //seekbar viewers
@@ -245,7 +247,6 @@ class MacroCountActivity : AppCompatActivity() {
             showImagePicker(imageIntentLauncher)
         }
 
-
     }
 
     fun initData(value: String): String {
@@ -275,8 +276,9 @@ class MacroCountActivity : AppCompatActivity() {
                 when(result.resultCode){
                     RESULT_OK -> {
                         if (result.data != null) {
-                            i("Got Result ${result.data!!.data}")
+                            i("Got Result ${result.data!!.data!!}")
                             macroCount.image = result.data!!.data!!
+                            i("Got Result macrocount image ${macroCount.image}")
                             Picasso.get()
                                 .load(macroCount.image)
                                 .into(binding.macroCountImage)
@@ -340,5 +342,4 @@ class MacroCountActivity : AppCompatActivity() {
                     RESULT_CANCELED -> { } else -> { }
                 }
             }
-
 }

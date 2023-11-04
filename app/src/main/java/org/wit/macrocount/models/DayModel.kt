@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DayModel(
-    var date: LocalDate = LocalDate.now(),
+    var date: String = "",
     var userId: Long = 0,
     var userMacroIds: List<String> = emptyList<String>()) : Parcelable

@@ -45,7 +45,7 @@ class DayJSONStore(private val context: Context) : DayStore {
     }
 
     override fun findByUserDate(id: Long, date: LocalDate): DayModel? {
-        return days.find { d -> d.userId == id && d.date == date }
+        return days.find { d -> d.userId == id && d.date == date.toString() }
     }
 
     override fun create(day: DayModel) {
@@ -56,27 +56,47 @@ class DayJSONStore(private val context: Context) : DayStore {
     override fun addMacroId(macroId: Long, userId: Long, date: LocalDate) {
         var dayModel = DayModel()
         dayModel.userId = userId
-        dayModel.date = date
+        dayModel.date = date.toString()
 
-        var foundDay: DayModel? = days.find { d -> d.date == date && d.userId == userId }
+        Timber.i("searching for existing date: $dayModel")
+
+        var foundDay: DayModel? = days.find { d -> d.date == date.toString() && d.userId == userId }
 
         if (foundDay != null) {
+            Timber.i("foundDay: $foundDay")
             var macroIds = foundDay.userMacroIds.toMutableList()
             macroIds.add(macroId.toString())
             dayModel.userMacroIds = macroIds
-
+            Timber.i("Updating with: $dayModel")
             update(dayModel)
 
         } else {
             dayModel.userMacroIds = listOf(macroId.toString())
+            Timber.i("Creating day: $dayModel")
             create(dayModel)
         }
     }
 
-    private fun update(day: DayModel) {
+    override fun update(day: DayModel) {
         val foundDay = days.find { it.date == day.date && it.userId == day.userId }
         foundDay?.let {
+            Timber.i("foundDay and updating: $foundDay")
             it.userMacroIds = day.userMacroIds
+            serialize()
+        }
+    }
+
+    override fun removeMacro(userId: Long, date: String, macroId: String) {
+        val foundDay = days.find { it.date == date && it.userId == userId }
+        if (foundDay != null) {
+            val foundDayMacros = foundDay.userMacroIds
+            val index = foundDayMacros.indexOf(macroId)
+            val filteredList = if (index != -1) {
+                foundDayMacros.filterIndexed { i, _ -> i != index }
+            } else {
+                foundDayMacros
+            }
+            foundDay.userMacroIds = filteredList
             serialize()
         }
     }

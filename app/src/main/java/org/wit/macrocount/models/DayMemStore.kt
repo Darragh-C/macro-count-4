@@ -16,7 +16,7 @@ class DayMemStore: DayStore {
     }
 
     override fun findByUserDate(id: Long, date: LocalDate): DayModel? {
-        return days.find { d -> d.userId == id && d.date == date }
+        return days.find { d -> d.userId == id && d.date == date.toString() }
     }
 
     override fun create(day: DayModel) {
@@ -27,9 +27,9 @@ class DayMemStore: DayStore {
     override fun addMacroId(macroId: Long, userId: Long, date: LocalDate) {
         var dayModel = DayModel()
         dayModel.userId = userId
-        dayModel.date = date
+        dayModel.date = date.toString()
 
-        var foundDay: DayModel? = days.find { d -> d.date == date && d.userId == userId }
+        var foundDay: DayModel? = days.find { d -> d.date == date.toString() && d.userId == userId }
 
         if (foundDay != null) {
             var macroIds = foundDay.userMacroIds.toMutableList()
@@ -44,7 +44,16 @@ class DayMemStore: DayStore {
         }
     }
 
-    private fun update(day: DayModel) {
+    override fun removeMacro(userId: Long, date: String, macroId: String) {
+        val foundDay = days.find { it.date == date && it.userId == userId }
+        if (foundDay != null) {
+            val foundDayMacros = foundDay.userMacroIds
+            val filteredList = foundDayMacros.filter { it != macroId }
+            foundDay.userMacroIds = filteredList
+        }
+    }
+
+    override fun update(day: DayModel) {
         var foundDay: DayModel? = days.find { d -> d.date == day.date && d.userId == day.userId }
         if (foundDay != null) {
             foundDay = day

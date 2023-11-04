@@ -2,6 +2,7 @@ package org.wit.macrocount.activities
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -90,11 +91,14 @@ class CameraActivity: AppCompatActivity() {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun
-                        onImageSaved(output: ImageCapture.OutputFileResults){
+                override fun onImageSaved(output: ImageCapture.OutputFileResults){
                     val msg = "Photo capture succeeded: ${output.savedUri}"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+                    val resultIntent = Intent()
+                    resultIntent.putExtra("image_uri", output.savedUri)
+                    setResult(RESULT_OK, resultIntent)
+                    finish()
                 }
             }
         )

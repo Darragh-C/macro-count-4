@@ -26,6 +26,11 @@ class MacroCountMemStore: MacroCountStore {
         return macroCounts.find { m -> m.id == id }
     }
 
+    override fun findByIds(ids: List<String>): List<MacroCountModel?> {
+        var foundMacros = mutableListOf<MacroCountModel?>()
+        ids.forEach { it -> foundMacros.add(macroCounts.find { m -> m.id == it.toLong() })}
+        return foundMacros
+    }
 
     override fun findByTitle(title: String): MacroCountModel {
         val foundMacros = macroCounts.filter { m -> m.title == title }

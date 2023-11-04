@@ -10,5 +10,5 @@ interface MacroCountStore {
     fun findById(id: Long): MacroCountModel?
     fun findByTitle(title: String): MacroCountModel
     fun isUniqueTitle(title: String): Boolean
-
+    fun findByIds(ids: List<String>): List<MacroCountModel?>
 }

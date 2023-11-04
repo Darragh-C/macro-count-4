@@ -26,10 +26,8 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
     private lateinit var binding: ActivityMacrocountListBinding
     private lateinit var adapter: MacroCountAdapter
     private lateinit var userRepo: UserRepo
-    //var userMacrosToday:
-    //private var currentUser: UserModel? = null
-    //private var currentUserId: String? = null
-    //var search = false
+    private var usersDailyMacroObjList = mutableListOf<MacroCountModel>()
+    private var currentUserId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,30 +39,21 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
         app = application as MainApp
 
         userRepo = UserRepo(applicationContext)
-        val currentUserId = userRepo.userId
+        currentUserId = userRepo.userId!!.toLong()
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
 
-        val userToday = app.days.findByUserDate(currentUserId!!.toLong(), LocalDate.now())
-        val userTodayMacros = userToday?.userMacroIds?.mapNotNull { app.macroCounts.findById(it.toLong()) }
-
-        val userTodayMacrosList = userTodayMacros?.toMutableList() ?: mutableListOf()
-
-        Timber.i("userTodayMacros onCreate: $userTodayMacrosList")
-
-        adapter = MacroCountAdapter(userTodayMacrosList, this)
+        updatedAdapterMacros()
+        adapter = MacroCountAdapter(usersDailyMacroObjList, this)
 
         binding.recyclerView.adapter = adapter
-
-//        var currentUserMacros = currentUserId?.let { app.macroCounts.findByUserId(it.toLong()) }
-//        Timber.i("findByCurrentUser() at onCreate: $currentUserMacros")
 
         val fab: FloatingActionButton = findViewById(R.id.list_fab)
 
         fab.setOnClickListener {
             val launcherIntent = Intent(this, MacroCountActivity::class.java)
-            getResult.launch(launcherIntent)
+            getAddResult.launch(launcherIntent)
         }
     }
 
@@ -77,30 +66,23 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
         when (item.itemId) {
             R.id.data_icon -> {
                 val launcherIntent = Intent(this, MacroChartsActivity::class.java)
-                getResult.launch(launcherIntent)
+                startActivity(launcherIntent)
             }
             R.id.item_profile -> {
                 Timber.i("clicked profile icon")
                 val launcherIntent = Intent(this, UserProfileActivity::class.java)
-                getResult.launch(launcherIntent)
+                startActivity(launcherIntent)
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private val getResult =
+    private val getAddResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-
-                userRepo = UserRepo(applicationContext)
-                val currentUserId = userRepo.userId
-
-                if (currentUserId != null) {
-                    val newMacroCounts = app.macroCounts.findByUserId(currentUserId.toLong())
-                    adapter.updateData(newMacroCounts)
-                    adapter.notifyDataSetChanged()
-                }
-
+                updatedAdapterMacros()
+                adapter.updateData(usersDailyMacroObjList)
+                adapter.notifyDataSetChanged()
             }
         }
 
@@ -111,34 +93,45 @@ class MacroCountListActivity : AppCompatActivity(), MacroCountListener {
     }
 
     override fun onMacroDeleteClick(macroCount: MacroCountModel) {
-        val currentUserId = userRepo.userId
+        val position = usersDailyMacroObjList.indexOfFirst { it.id == macroCount.id }
+        if (position != -1) {
+            usersDailyMacroObjList.removeAt(position)
+            adapter.updateData(usersDailyMacroObjList)
+            adapter.notifyItemRemoved(position)
 
-        if (currentUserId != null) {
-            val userMacroCounts = app.macroCounts.findByUserId(currentUserId.toLong()).toMutableList()
-
-            val position = userMacroCounts.indexOfFirst { it.id == macroCount.id }
-
-            if (position != -1) {
-                userMacroCounts.removeAt(position)
-                app.macroCounts.delete(macroCount)
-                adapter.updateData(userMacroCounts)
-                adapter.notifyItemRemoved(position)
-            }
+            app.days.removeMacro(currentUserId, LocalDate.now().toString(), macroCount.id.toString())
         }
     }
 
     private val getClickResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                userRepo = UserRepo(applicationContext)
-
-                val currentUserId = userRepo.userId
-
-                if (currentUserId != null) {
-                    adapter.updateData(app.macroCounts.findByUserId(currentUserId.toLong()))
-                }
-
+                updatedAdapterMacros()
+                adapter.updateData(usersDailyMacroObjList)
                 adapter.notifyDataSetChanged()
             }
         }
+
+    private fun updatedAdapterMacros() {
+        val today = LocalDate.now()
+        Timber.i("Checking if logged in user $currentUserId has added macros today on $today")
+        val userToday = app.days.findByUserDate(currentUserId!!.toLong(), today)
+        Timber.i("User's day object: $userToday")
+
+        val usersDailyMacroList = userToday?.userMacroIds
+
+        var usersDailyMacroListAsObjs = mutableListOf<MacroCountModel>()
+
+        if (!usersDailyMacroList.isNullOrEmpty()) {
+            var foundMacros = app.macroCounts.findByIds(usersDailyMacroList)
+            if (!foundMacros.isNullOrEmpty()) {
+                foundMacros.forEach { it -> it?.let {usersDailyMacroListAsObjs.add(it)} }
+            }
+            Timber.i("user's daily macro object list usersDailyMacroListAsObjs: $usersDailyMacroListAsObjs")
+        }
+
+        Timber.i("updateAdapterMacros result: $usersDailyMacroObjList.toList()")
+        usersDailyMacroObjList = usersDailyMacroListAsObjs
+
+    }
 }

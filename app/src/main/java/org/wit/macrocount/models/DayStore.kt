@@ -9,4 +9,6 @@ interface DayStore {
     fun create(day: DayModel)
     fun addMacroId(macroId: Long, userId: Long, date: LocalDate)
     fun findByUserDate(id: Long, date: LocalDate): DayModel?
+    fun update(day: DayModel)
+    fun removeMacro(userId: Long, date: String, macroId: String)
 }
